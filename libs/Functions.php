@@ -1642,8 +1642,11 @@ if ( !trait_exists('Functions') ){
 						}
 					}
 				} elseif ( !is_single() && !is_page() && get_post_type() !== 'post' && !is_404() ){
-					$post_type = get_post_type_object(get_post_type());
-					echo $data['before'] . '<span itemprop="name">' . $post_type->labels->name . '</span><meta itemprop="position" content="' . $position . '" />' . $data['after'];
+					if( $post_type = get_post_type_object( get_post_type() ) ){
+						echo $data['before'] . '<span itemprop="name">' . $post_type->labels->name . '</span><meta itemprop="position" content="' . $position . '" />' . $data['after'];
+					}else{
+						echo $data['before'] . get_queried_object()->name . $data['after'];
+					}
 				} elseif ( is_attachment() ){ //@TODO "Nebula" 0: Check for gallery pages? If so, it should be Home > Parent(s) > Gallery > Attachment
 					if ( !empty($post->post_parent) ){ //@TODO "Nebula" 0: What happens if the page parent is a child of another page?
 						echo '<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><a href="' . get_permalink($post->post_parent) . '" itemprop="item"><span itemprop="name">' . strip_tags(get_the_title($post->post_parent)) . '</span></a><meta itemprop="position" content="' . $position . '" /></li> ' . $data['delimiter_html'] . ' ' . strip_tags(get_the_title());
